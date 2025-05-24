@@ -1,0 +1,263 @@
+if game.CoreGui:FindFirstChild("ChompedAutoFarmUI") then
+    game.CoreGui.ChompedAutoFarmUI:Destroy()
+end
+
+local player = game.Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "ChompedAutoFarmUI"
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Main Frame
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 260, 0, 155)
+frame.Position = UDim2.new(0.5, -130, 0.48, -77)
+frame.BackgroundColor3 = Color3.fromRGB(20, 21, 25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.ClipsDescendants = true
+frame.BackgroundTransparency = 0.1
+
+-- Title Bar
+local titlebar = Instance.new("Frame", frame)
+titlebar.Size = UDim2.new(1, 0, 0, 32)
+titlebar.BackgroundColor3 = Color3.fromRGB(14, 14, 16)
+titlebar.BorderSizePixel = 0
+
+local title = Instance.new("TextLabel", titlebar)
+title.Size = UDim2.new(1, 0, 1, 0)
+title.BackgroundTransparency = 1
+title.Text = "Chomped"
+title.Font = Enum.Font.GothamBlack
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(220, 210, 240)
+
+-- Close button (красный крестик)
+local close = Instance.new("TextButton", titlebar)
+close.Size = UDim2.new(0, 28, 0, 28)
+close.Position = UDim2.new(1, -32, 0, 2)
+close.BackgroundTransparency = 1
+close.Text = "×"
+close.Font = Enum.Font.GothamBold
+close.TextSize = 22
+close.TextColor3 = Color3.fromRGB(255, 60, 60)
+close.BorderSizePixel = 0
+close.AutoButtonColor = false
+close.MouseEnter:Connect(function() close.TextColor3 = Color3.fromRGB(255, 0, 0) end)
+close.MouseLeave:Connect(function() close.TextColor3 = Color3.fromRGB(255, 60, 60) end)
+
+-- Minimize button (короткий минус)
+local minimize = Instance.new("TextButton", titlebar)
+minimize.Size = UDim2.new(0, 28, 0, 28)
+minimize.Position = UDim2.new(1, -64, 0, 2)
+minimize.BackgroundTransparency = 1
+minimize.Text = "-" -- короткий минус!
+minimize.Font = Enum.Font.GothamBold
+minimize.TextSize = 22
+minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimize.BorderSizePixel = 0
+minimize.AutoButtonColor = false
+
+-- Tabs (side by side, no gap)
+local tabs = Instance.new("Frame", frame)
+tabs.Size = UDim2.new(1, -16, 0, 28)
+tabs.Position = UDim2.new(0, 8, 0, 38)
+tabs.BackgroundTransparency = 1
+
+local tab1 = Instance.new("TextButton", tabs)
+tab1.Size = UDim2.new(0.5, 0, 1, 0)
+tab1.Position = UDim2.new(0, 0, 0, 0)
+tab1.Text = "Автофарм"
+tab1.BackgroundColor3 = Color3.fromRGB(32, 34, 46)
+tab1.TextColor3 = Color3.fromRGB(185, 185, 210)
+tab1.Font = Enum.Font.GothamBold
+tab1.TextSize = 16
+tab1.BorderSizePixel = 0
+tab1.AutoButtonColor = false
+tab1.BackgroundTransparency = 0.1
+
+local tab2 = Instance.new("TextButton", tabs)
+tab2.Size = UDim2.new(0.5, 0, 1, 0)
+tab2.Position = UDim2.new(0.5, 0, 0, 0)
+tab2.Text = "Телепорт"
+tab2.BackgroundColor3 = Color3.fromRGB(32, 34, 46)
+tab2.TextColor3 = Color3.fromRGB(185, 185, 210)
+tab2.Font = Enum.Font.GothamBold
+tab2.TextSize = 16
+tab2.BorderSizePixel = 0
+tab2.AutoButtonColor = false
+tab2.BackgroundTransparency = 0.1
+
+local function setTab(tab)
+    local sel = Color3.fromRGB(80, 95, 140)
+    local norm = Color3.fromRGB(32, 34, 46)
+    tab1.BackgroundColor3 = (tab == 1) and sel or norm
+    tab2.BackgroundColor3 = (tab == 2) and sel or norm
+end
+
+-- Автофарм
+local autofarm_frame = Instance.new("Frame", frame)
+autofarm_frame.Size = UDim2.new(1, -22, 1, -92)
+autofarm_frame.Position = UDim2.new(0, 11, 0, 66)
+autofarm_frame.BackgroundColor3 = Color3.fromRGB(24, 25, 30)
+autofarm_frame.BorderSizePixel = 0
+autofarm_frame.BackgroundTransparency = 0.13
+autofarm_frame.Visible = true
+
+local autofarm_btn = Instance.new("TextButton", autofarm_frame)
+autofarm_btn.Size = UDim2.new(1, -20, 0, 38)
+autofarm_btn.Position = UDim2.new(0, 10, 0.18, 0)
+autofarm_btn.Text = "Auto farm: OFF"
+autofarm_btn.BackgroundColor3 = Color3.fromRGB(120, 45, 70)
+autofarm_btn.TextColor3 = Color3.fromRGB(240,220,255)
+autofarm_btn.Font = Enum.Font.GothamBlack
+autofarm_btn.TextSize = 18
+autofarm_btn.BorderSizePixel = 0
+autofarm_btn.AutoButtonColor = false
+autofarm_btn.MouseEnter:Connect(function() autofarm_btn.TextColor3 = Color3.fromRGB(255,255,255) end)
+autofarm_btn.MouseLeave:Connect(function() autofarm_btn.TextColor3 = Color3.fromRGB(240,220,255) end)
+
+-- Телепорт
+local teleport_frame = Instance.new("Frame", frame)
+teleport_frame.Size = UDim2.new(1, -22, 1, -92)
+teleport_frame.Position = UDim2.new(0, 11, 0, 66)
+teleport_frame.BackgroundColor3 = Color3.fromRGB(24, 25, 30)
+teleport_frame.BorderSizePixel = 0
+teleport_frame.BackgroundTransparency = 0.13
+teleport_frame.Visible = false
+
+-- Кнопка 1: TP to crocodil (без возврата)
+local tp1 = Instance.new("TextButton", teleport_frame)
+tp1.Size = UDim2.new(1, -20, 0, 28)
+tp1.Position = UDim2.new(0, 10, 0, 8)
+tp1.Text = "TP to crocodil"
+tp1.BackgroundColor3 = Color3.fromRGB(36, 80, 140)
+tp1.TextColor3 = Color3.fromRGB(210, 210, 255)
+tp1.Font = Enum.Font.GothamBold
+tp1.TextSize = 16
+tp1.BorderSizePixel = 0
+tp1.AutoButtonColor = false
+tp1.BackgroundTransparency = 0.07
+
+-- Кнопка 2: TP to spawn (без возврата)
+local tp2 = Instance.new("TextButton", teleport_frame)
+tp2.Size = UDim2.new(1, -20, 0, 28)
+tp2.Position = UDim2.new(0, 10, 0, 44)
+tp2.Text = "TP to spawn"
+tp2.BackgroundColor3 = Color3.fromRGB(36, 80, 140)
+tp2.TextColor3 = Color3.fromRGB(210, 210, 255)
+tp2.Font = Enum.Font.GothamBold
+tp2.TextSize = 16
+tp2.BorderSizePixel = 0
+tp2.AutoButtonColor = false
+tp2.BackgroundTransparency = 0.07
+
+-- Логика вкладок
+tab1.MouseButton1Click:Connect(function()
+    autofarm_frame.Visible = true
+    teleport_frame.Visible = false
+    setTab(1)
+end)
+tab2.MouseButton1Click:Connect(function()
+    autofarm_frame.Visible = false
+    teleport_frame.Visible = true
+    setTab(2)
+end)
+setTab(1)
+
+-- Сворачивание/разворачивание меню
+local minimized = false
+minimize.MouseButton1Click:Connect(function()
+    if minimized then
+        frame.Size = UDim2.new(0, 260, 0, 155)
+        minimize.Text = "-"
+        minimize.TextColor3 = Color3.fromRGB(255,255,255)
+        for _, v in ipairs(frame:GetChildren()) do
+            if v ~= titlebar then
+                v.Visible = true
+            end
+        end
+        minimized = false
+    else
+        frame.Size = UDim2.new(0, 260, 0, 32)
+        minimize.Text = "+"
+        minimize.TextColor3 = Color3.fromRGB(255,255,255)
+        for _, v in ipairs(frame:GetChildren()) do
+            if v ~= titlebar then
+                v.Visible = false
+            end
+        end
+        minimized = true
+    end
+end)
+
+-- Крестик
+close.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+-- ===== АВТОФАРМ (быстрый, с возвратом на место) =====
+local farm_on = false
+local farm_thread
+
+function start_autofarm()
+    farm_on = true
+    autofarm_btn.Text = "Auto farm: ON"
+    autofarm_btn.BackgroundColor3 = Color3.fromRGB(60, 160, 100)
+    farm_thread = task.spawn(function()
+        while farm_on do
+            task.wait(0.05)
+            local coinsFolder = workspace:FindFirstChild("Coins")
+            if coinsFolder then
+                for _, v in pairs(coinsFolder:GetChildren()) do
+                    if not farm_on then break end
+                    if v.Name == "Coin" and v:IsA("BasePart") then
+                        local char = player.Character
+                        local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            local oldCFrame = hrp.CFrame
+                            hrp.CFrame = v.CFrame
+                            task.wait(0.025)
+                            hrp.CFrame = oldCFrame
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
+function stop_autofarm()
+    farm_on = false
+    autofarm_btn.Text = "Auto farm: OFF"
+    autofarm_btn.BackgroundColor3 = Color3.fromRGB(120, 45, 70)
+end
+
+autofarm_btn.MouseButton1Click:Connect(function()
+    if not farm_on then
+        start_autofarm()
+    else
+        stop_autofarm()
+    end
+end)
+
+-- ===== ТЕЛЕПОРТЫ =====
+local teleportCoords = {
+    Vector3.new(177.17723083496094, 20.407455444335938, 352.48876953125),  -- crocodil
+    Vector3.new(166.03530883789062, 26.424435669921867, 286.39337158203125), -- spawn
+}
+
+tp1.MouseButton1Click:Connect(function()
+    local char = player.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = CFrame.new(teleportCoords[1])
+    end
+end)
+
+tp2.MouseButton1Click:Connect(function()
+    local char = player.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = CFrame.new(teleportCoords[2])
+    end
+end)
